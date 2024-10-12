@@ -51,7 +51,8 @@ namespace LoginLogout.Controllers
                 }
                 catch (DbUpdateException ex)
                 {
-                    ModelState.AddModelError("", "Email Id already exist")  ;
+                    ModelState.AddModelError("", "Email Id already exist");
+                    string message = ex.Message.ToString();
                     return ViewBag(viewModel);
                 }
                 ViewBag.Message = $"{userAccount.FirstName} account Created !!";
@@ -78,13 +79,26 @@ namespace LoginLogout.Controllers
                     { 
                         new Claim(ClaimTypes.Name, user.Email),
                         new Claim("Name",user.FirstName),
-                        new Claim(ClaimTypes.Role,"User")
+                        new Claim(ClaimTypes.Role,user.Role)
                     };
 
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    return RedirectToAction("Dashboard");
+                    if (user.Role.Equals("admin"))
+                    {
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                        return RedirectToAction("Dashboard");
+                    }
+                    else
+                    {
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                        return RedirectToAction("Dashboard");
+                    }
+
+
                 }
                 else
                 {

@@ -29,5 +29,7 @@ namespace LoginLogout.Entities
         [Required(ErrorMessage = "Password is Required")]
         [MaxLength(15, ErrorMessage = "Max 50 characters allowed")]
         public string Password { get; set; }
+
+        public string Role { get; set; }
     }
 }
