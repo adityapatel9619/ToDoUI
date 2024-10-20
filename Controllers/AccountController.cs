@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace LoginLogout.Controllers
@@ -22,7 +23,16 @@ namespace LoginLogout.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            return View(_context.UserAccounts.ToList());
+            //return View(_context.UserAccounts.ToList());
+            var data = _context.UserAccounts.Where(b => (b.Role == 0)).ToList();
+            if (data.Count >0 && data != null)
+            {
+                return View(data);
+            }
+            else
+            {
+                return View(null);
+            }
         }
 
         public IActionResult Registration()
@@ -41,6 +51,7 @@ namespace LoginLogout.Controllers
                 userAccount.Email = viewModel.Email;
                 userAccount.UserName = viewModel.UserName;
                 userAccount.Password = viewModel.Password;
+                userAccount.Role = viewModel.Role;
 
                 try
                 {
@@ -79,11 +90,11 @@ namespace LoginLogout.Controllers
                     { 
                         new Claim(ClaimTypes.Name, user.Email),
                         new Claim("Name",user.FirstName),
-                        new Claim(ClaimTypes.Role,user.Role)
+                        new Claim(ClaimTypes.Role,user.Role.ToString())
                     };
 
 
-                    if (user.Role.Equals("admin"))
+                    if (user.Role == 1)
                     {
                         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
@@ -92,10 +103,7 @@ namespace LoginLogout.Controllers
                     }
                     else
                     {
-                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                        HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-                        return RedirectToAction("Dashboard");
+                        return RedirectToAction("Index","Custom");
                     }
 
 
@@ -121,6 +129,33 @@ namespace LoginLogout.Controllers
         {
             ViewBag.Name = HttpContext.User.Identity.Name;
             return View();
+        }
+
+        [Authorize]
+        public IActionResult ApproveUser(UserAccount user)
+        {
+            try
+            {
+                UserAccount account = new UserAccount();
+                account.Id = user.Id;
+
+                var data = _context.UserAccounts.FirstOrDefault(t => t.Id == account.Id);
+
+                if (data!= null)
+                {
+                    data.Role = 1;
+
+                    _context.Update(data);
+                    _context.SaveChanges();
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return RedirectToAction("Index");
         }
     }
 }
