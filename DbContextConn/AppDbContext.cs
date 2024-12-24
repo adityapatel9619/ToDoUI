@@ -11,6 +11,7 @@ namespace LoginLogout.DbContextConn
         }
 
         public DbSet<UserAccount> UserAccounts { get; set; }
+        public DbSet<UserInformation> UserInformation { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

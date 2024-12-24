@@ -13,7 +13,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @if(ViewBag.Message != null)
             {
-                <div class="form-group" style="color:green;">@ViewBag.Message</div>
+                <div class="form-group" style="color:green; font-weight:bold;">@ViewBag.Message</div>
             }
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
@@ -38,14 +38,17 @@
             <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
                 <input asp-for="Password" class="form-control" />
+                <input type="checkbox" name="mycheckbox" id="ckShowPass" onclick="myshowp(this)" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ConfirmPassword" class="control-label"></label>
                 <input asp-for="ConfirmPassword" class="form-control" />
+                <input type="checkbox" name="mycheckbox" id="ckShowPass" onclick="myshowcp(this)" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <br />
                 <input type="submit" value="Register" class="btn btn-primary" />
             </div>
         </form>
@@ -55,6 +58,30 @@
 <div>
     Already Registerd ? <a asp-action="Login">Login</a>
 </div>
+
+
+<script>
+    function myshowp(e) {
+        txtBox = $('#Password')
+        if (e.checked) {
+            txtBox.attr("Type", "Text");
+        }
+        else {
+            txtBox.attr("Type", "Password");
+        }
+    }
+
+    function myshowcp(e) {
+        txtBox = $('#ConfirmPassword')
+        if (e.checked) {
+            txtBox.attr("Type", "Text");
+        }
+        else {
+            txtBox.attr("Type", "Password");
+        }
+    }
+</script>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

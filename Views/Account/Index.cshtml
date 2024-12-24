@@ -22,9 +22,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.UserName)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -48,9 +45,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.UserName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Password)
                     </td>
                     <td>
                         @Html.ActionLink("Approve", "ApproveUser", new {  id=item.Id  }) |

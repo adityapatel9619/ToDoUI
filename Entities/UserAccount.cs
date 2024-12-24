@@ -27,9 +27,11 @@ namespace LoginLogout.Entities
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "Password is Required")]
-        [MaxLength(15, ErrorMessage = "Max 50 characters allowed")]
+        [MaxLength(64, ErrorMessage = "Max 50 characters allowed")]
         public string Password { get; set; }
 
         public int Role { get; set; }
+
+        public DateTime? LastLoginDatetime { get; set; }
     }
 }
